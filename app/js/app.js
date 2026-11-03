@@ -8,7 +8,7 @@ import { STARTER } from "./words.js";
 import { stepsFor, same, compareLetters, crackFeedback, gapChoices, typoSentence, checkOwnSentence, shuffle } from "./spelling.js";
 import { Store, ActiveClock } from "./store.js";
 import { evaluateGoal, GOAL_TYPES } from "./goals.js";
-import { THREADS, STORIES } from "./content.js";
+import { THREADS, STORIES, READS } from "./content.js";
 import { shareCertificate, prettyDate } from "./certificate.js";
 import { speak, cancelSpeech } from "./speech.js";
 import { COLS, ROWS, newGame, move, rotate, tick, hardDrop, dropMs, unlockedLevel, wordsToNextLevel, MAX_LEVEL } from "./blocks.js";
@@ -78,7 +78,7 @@ function viewHome() {
       <button class="game" data-act="thread"><b>Text Thread</b><span>Read it, then reply</span></button>
       <button class="game" data-act="story"><b>Your Call</b><span>Stories where you decide</span></button>
       <button class="game" data-act="useit"><b>Use It</b><span>Write your own sentence</span></button>
-      ${store.data.readings.length ? `<button class="game" data-act="reading"><b>My Reading</b><span>From your book</span></button>` : ""}
+      <button class="game" data-act="reading"><b>Read It</b><span>How-tos and your book</span></button>
       <button class="game arcade" data-act="go" data-to="arcade"><b>Block Drop</b><span>${store.data.arcade.plays} ${store.data.arcade.plays === 1 ? "play" : "plays"} · Level ${unlockedLevel(dayCount())}</span></button>
       <button class="game" data-act="go" data-to="wins"><b>My Wins</b><span>Words and certificates</span></button>
     </section>
@@ -430,12 +430,12 @@ function useItCheck() {
 // My Reading: helper's passage and questions
 function startReading(id) {
   if (!id) { S = {}; screen = "readpick"; return render(); }
-  S = { r: store.data.readings.find(x => x.id === id), q: -1, msg: "" };
+  S = { r: [...store.data.readings, ...READS].find(x => x.id === id), q: -1, msg: "" };
   screen = "reading";
   render();
 }
 function viewReadPick() {
-  return top("My Reading") + `<div class="options">${store.data.readings.map(r => `<button data-act="read-open" data-id="${r.id}">${esc(r.title)}${store.data.done.readings.includes(r.id) ? " ✓" : ""}</button>`).join("")}</div>`;
+  return top("Read It") + `<p class="muted">Read it, then answer. Everything you need is in the reading.</p><div class="options">${[...store.data.readings, ...READS].map(r => `<button data-act="read-open" data-id="${r.id}">${esc(r.title)}${store.data.done.readings.includes(r.id) ? " ✓" : ""}</button>`).join("")}</div>`;
 }
 function viewReading() {
   const { r, q, msg } = S;

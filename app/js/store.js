@@ -66,7 +66,15 @@ export class Store {
 
   // ---- Words
   allWords() {
-    return [...this.data.mine, ...STARTER.filter(w => w.level >= this.data.level), ...STARTER.filter(w => w.level < this.data.level)];
+    const byLevel = [...STARTER.filter(w => w.level >= this.data.level), ...STARTER.filter(w => w.level < this.data.level)];
+    // One word from his interests, then one everyday word, so both keep coming.
+    const topic = byLevel.filter(w => w.topic), everyday = byLevel.filter(w => !w.topic);
+    const mixed = [];
+    for (let i = 0; i < Math.max(topic.length, everyday.length); i++) {
+      if (topic[i]) mixed.push(topic[i]);
+      if (everyday[i]) mixed.push(everyday[i]);
+    }
+    return [...this.data.mine, ...mixed];
   }
   word(key) { return this.allWords().find(w => w.key === key) || null; }
   stateOf(key) { return (this.data.words[key] ||= { step: 0, started: null, owned: null, review: null, misses: 0 }); }

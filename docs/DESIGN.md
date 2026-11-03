@@ -29,7 +29,8 @@ SEEDSED. One owner per decision; `app.js` only wires them.
 - Fill the Gap uses word groups, so an odd choice could occasionally still fit.
 - Sound-alikes for helper-added words come from spelling rules and may not always sound exact; the helper can see them on the list.
 - Settings and goals aren't locked, so numbers rely on trust. It's not an official record.
-- Topics are general until we know his interests. Level starts at "Everyday" unless the helper changes it.
+- Interest content covers camping and RVs, fixing things up, and cooking and baking, and is worded generally because the code is public. Level starts at "Everyday" unless the helper changes it.
+- Word order: his own words, then one interest word and one everyday word, alternating.
 
 ## Planned
 

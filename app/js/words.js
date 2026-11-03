@@ -7,6 +7,10 @@
 
 const w = (level, text, wrong, kind, meaning, gap) => ({ key: text, text, wrong: wrong.split(" "), kind, meaning, gap, level, source: "starter" });
 
+// Words from his interests: camping and RVs, fixing things up, cooking and baking. Mixed in with the
+// everyday words by store.js. Add new words only at the end, so existing progress keeps its place.
+const t = (...args) => ({ ...w(...args), topic: true });
+
 export const STARTER = [
   // Level 1: everyday words
   w(1, "said", "sed sedd saed", "verb", "Told someone something, in the past.", "She ___ the store closes at nine."),
@@ -102,5 +106,64 @@ export const STARTER = [
   w(3, "receipt", "reciept reseet receet", "noun", "The paper showing what you paid.", "Keep the ___ in case you take it back."),
   w(3, "exercise", "exersize excercise exersise", "noun", "Moving your body to stay in shape.", "A good walk is great ___."),
   w(3, "necessary", "neccessary necesary nessesary", "adjective", "Something you must have or do.", "Is it ___ to bring my ID?"),
-  w(3, "separate", "seperate separat seperit", "adjective", "Apart, not together.", "We came in ___ cars.")
+  w(3, "separate", "seperate separat seperit", "adjective", "Apart, not together.", "We came in ___ cars."),
+  // Level 1: from his interests
+  t(1, "tent", "tennt tentt tehnt", "noun", "A cloth shelter you sleep in outdoors.", "We set up the ___ before dark."),
+  t(1, "firepit", "fyrepit firepitt fierpit", "noun", "A place built to hold a fire outdoors.", "We sat around the ___ after dinner."),
+  t(1, "rust", "russt ruhst wrust", "noun", "The reddish-brown coating that forms on old metal.", "Sand the ___ off before you paint the metal."),
+  t(1, "paint", "paynt paent paintt", "noun", "Colored liquid you brush onto things.", "This ___ needs two coats."),
+  t(1, "stain", "stayn staine stane", "noun", "A liquid that colors wood but lets the grain show.", "I used a dark ___ on the dresser."),
+  t(1, "sand", "sannd sande saand", "verb", "To rub something smooth with rough paper.", "You should ___ the wood before you paint it."),
+  t(1, "bake", "baik bayk baek", "verb", "To cook in an oven.", "I want to ___ cookies tonight."),
+  t(1, "dough", "doh dowe doughe", "noun", "Soft, thick mix that gets baked into bread or cookies.", "Roll out the ___ on the counter."),
+  t(1, "pie", "pye piy piie", "noun", "A baked crust with a sweet or savory filling.", "I baked an apple ___ for dessert."),
+  t(1, "batter", "battur bater battar", "noun", "A wet mix for cakes or muffins, thin enough to pour.", "Pour the ___ into the cake pan."),
+  t(1, "cake", "cayk caik kake", "noun", "A sweet baked dessert, often with frosting.", "We had chocolate ___ at the party."),
+  t(1, "cook", "cuuk cooke cuk", "verb", "To make food ready to eat.", "I like to ___ on the grill."),
+  t(1, "oven", "uven ovun ovin", "noun", "A hot box in the kitchen for baking food.", "Put the pan in the ___ for ten minutes."),
+  t(1, "flour", "flowur flouer flowr", "noun", "Powder made from wheat, used for baking.", "The recipe needs two cups of ___."),
+  t(1, "sugar", "shugar shuger sugur", "noun", "Sweet white crystals.", "Add a little ___ to the coffee."),
+  t(1, "butter", "buttur buter buttar", "noun", "A soft yellow spread made from cream.", "Melt the ___ in the pan."),
+  t(1, "wood", "wuud wuhd woood", "noun", "What trees are made of.", "Stack the ___ next to the fire."),
+  t(1, "camper", "campur kamper campper", "noun", "A small home on wheels.", "We parked the ___ by the lake."),
+  // Level 2: from his interests
+  t(2, "trailer", "traler trailor traylur", "noun", "A vehicle pulled behind a truck.", "He hooked the ___ to his truck."),
+  t(2, "campfire", "campfyre kampfire campfier", "noun", "An outdoor fire at a campsite.", "We cooked hot dogs over the ___."),
+  t(2, "drawer", "droor drawr drawur", "noun", "A box that slides in and out of a dresser.", "My socks are in the top ___."),
+  t(2, "dresser", "dreser dressur dresur", "noun", "Furniture with drawers for clothes.", "I am fixing up my old ___."),
+  t(2, "lantern", "lantrun lanturn lantirn", "noun", "A light you can carry.", "Hang the ___ by the tent door."),
+  t(2, "ladder", "laddur lader laddar", "noun", "Steps you lean against something to climb.", "Hold the ___ while I climb up."),
+  t(2, "gloves", "gluvs gluvz glovs", "noun", "Coverings that protect your hands.", "Wear ___ when you strip old paint."),
+  t(2, "recipe", "ressipy resipe resipee", "noun", "Directions for making a food.", "This ___ makes twelve cookies."),
+  t(2, "cookies", "cookys cukies cookeez", "noun", "Small sweet baked treats.", "I baked ___ for the neighbors."),
+  t(2, "muffin", "mufin muffen muffun", "noun", "A small, round baked treat, like a little cake.", "I had a blueberry ___ this morning."),
+  t(2, "brownies", "brownys brownees brounies", "noun", "Soft chocolate squares baked in a pan.", "Cut the ___ after they cool."),
+  t(2, "frosting", "frostting frawsting frostin", "noun", "The sweet, creamy topping on a cake.", "Spread the ___ when the cake is cool."),
+  t(2, "yeast", "yeest yeaste yeeste", "noun", "What makes bread dough rise.", "The bread won't rise without ___."),
+  t(2, "whisk", "wisk whissk wisck", "verb", "To stir fast with a wire tool to mix in air.", "Use a fork to ___ the eggs."),
+  t(2, "powder", "powdur powdir pouder", "noun", "Something ground very fine, like baking soda or flour.", "Add one spoon of baking ___."),
+  t(2, "cupcake", "cupcayk kupcake cupcaik", "noun", "A small cake baked for one person.", "She put a candle on the ___."),
+  t(2, "measure", "mesure mezhur measur", "verb", "To find out how much or how big.", "You have to ___ the flour before you add it."),
+  t(2, "teaspoon", "teespoon teaspoone teespune", "noun", "A small spoon, or that much of something.", "Add one ___ of salt."),
+  t(2, "smooth", "smoothe smoth smuth", "adjective", "Even, with no rough spots.", "Sand it until the wood is ___."),
+  t(2, "hammer", "hammur hamer hammar", "noun", "A tool for hitting nails.", "Hand me the ___ and a nail."),
+  // Level 3: from his interests
+  t(3, "furniture", "furnature furnichure fernichure", "noun", "Things like chairs, tables and dressers.", "We moved the ___ into the garage."),
+  t(3, "sandpaper", "sandpapper sandpayper sandpapur", "noun", "Rough sheets for smoothing wood or metal.", "Use fine ___ on the drawers."),
+  t(3, "varnish", "varnesh varnush varnisch", "noun", "A clear coat that protects wood.", "Brush on ___ after the stain dries."),
+  t(3, "primer", "prymer primur prymur", "noun", "A first coat that helps paint stick.", "Put ___ on the metal before you paint."),
+  t(3, "generator", "jenerator genarator generater", "noun", "A machine that makes electricity.", "The ___ runs the lights at the campsite."),
+  t(3, "propane", "propain propayn proepane", "noun", "A gas used for grills and RV stoves.", "The grill is out of ___."),
+  t(3, "chocolate", "chocklit chocolit choclate", "noun", "A sweet brown food made from cocoa.", "I melted the ___ for the frosting."),
+  t(3, "biscuit", "biskit biscit bisquit", "noun", "A small, soft baked bread.", "I had a warm ___ with butter."),
+  t(3, "tablespoon", "tablespune tablespoone tabelspoon", "noun", "A big spoon, or as much as it holds. Three small spoons make one.", "Add one ___ of sugar."),
+  t(3, "spatula", "spachula spatchula spachoola", "noun", "A flat kitchen tool for lifting or spreading.", "Lift the cookies with a ___."),
+  t(3, "preheat", "preheet preheate prehete", "verb", "To warm the oven before you bake.", "Remember to ___ the oven first."),
+  t(3, "knead", "kneade neade kneede", "verb", "To press and fold dough with your hands.", "You have to ___ the bread dough."),
+  t(3, "ingredient", "ingreedient ingrediant engredient", "noun", "One of the foods that goes into a recipe.", "Flour is the main ___ in bread."),
+  t(3, "cinnamon", "cinamon sinnamon cinnamin", "noun", "A sweet brown spice.", "I put ___ on my toast."),
+  t(3, "vanilla", "vinilla vanila vanillah", "noun", "A sweet flavor used in baking.", "Add a spoon of ___ to the batter."),
+  t(3, "screwdriver", "skrewdriver screwdryver scrudriver", "noun", "A tool for turning screws.", "I need a ___ to take off the handles."),
+  t(3, "reservation", "reservashun rezervation reservasion", "noun", "A place saved for you ahead of time.", "I made a ___ at the campground."),
+  t(3, "campground", "campgrownd kampground campgroun", "noun", "A place set up for camping.", "The ___ has a small store.")
 ];

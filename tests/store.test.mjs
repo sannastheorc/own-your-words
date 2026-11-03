@@ -3,7 +3,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { Store, memoryStorage, ActiveClock, IDLE_MS, REVIEW_DAYS, dayKey } from "../app/js/store.js";
 import { evaluateGoal } from "../app/js/goals.js";
-import { THREADS, STORIES } from "../app/js/content.js";
+import { THREADS, STORIES, READS } from "../app/js/content.js";
 import { STARTER } from "../app/js/words.js";
 
 const DAY = 864e5;
@@ -147,6 +147,53 @@ test("corrupt or foreign saved data starts fresh, and a failed save never throws
   const s = new Store({ getItem: () => null, setItem: () => { throw new Error("full"); } });
   s.bump("puzzles");
   assert.equal(s.saveError.message, "full");
+});
+
+test("interest words alternate with everyday words, and his own come first", () => {
+  const s = new Store(memoryStorage(), clock());
+  const first = s.allWords().slice(0, 6);
+  assert.deepEqual(first.map(w => !!w.topic), [true, false, true, false, true, false]);
+  const { item } = s.addMine("pharmacy");
+  assert.equal(s.allWords()[0].key, item.key);
+  assert.equal(new Set(s.allWords().map(w => w.key)).size, s.allWords().length);
+  s.data.level = 3;
+  assert.ok(s.allWords().slice(1, 5).every(w => w.level === 3));
+});
+
+test("content additions don't disturb progress: a started word stays next", () => {
+  const now = clock(); const store = memoryStorage(); const s = new Store(store, now);
+  s.stateOf("said").started = s.today(); s.stateOf("said").step = 3; s.save();
+  assert.deepEqual(new Store(store, now).nextWord(), { key: "said", mode: "lab" });
+});
+
+test("Read It: every question's right answer is backed by the reading's own words", () => {
+  assert.ok(READS.length >= 6);
+  assert.equal(new Set(READS.map(r => r.id)).size, READS.length);
+  for (const r of READS) {
+    assert.ok(r.questions.length >= 3, r.id);
+    for (const q of r.questions) {
+      assert.ok(q.others.length >= 2 && !q.others.includes(q.right), `${r.id}: ${q.q}`);
+      const plain = s => s.toLowerCase().replace(/[^a-z0-9 -]/g, "");
+      const long = plain(q.right).split(" ").filter(x => x.length > 3 || /\d/.test(x));
+      const keys = long.length ? long : [plain(q.right)];
+      const found = keys.filter(k => plain(r.text).includes(k)).length;
+      assert.ok(found >= Math.ceil(keys.length / 2), `${r.id}: "${q.right}" isn't backed by the text`);
+    }
+  }
+});
+
+test("baking gets more attention than cooking, as asked", () => {
+  const bakeWords = /^(bake|oven|flour|sugar|butter|dough|pie|batter|cake|cookies|muffin|brownies|frosting|yeast|whisk|powder|cupcake|chocolate|biscuit|tablespoon|teaspoon|spatula|preheat|knead|vanilla|cinnamon|ingredient|recipe|measure)$/;
+  const words = STARTER.filter(w => w.topic);
+  assert.ok(words.filter(w => bakeWords.test(w.text)).length >= 20);
+  assert.ok(words.filter(w => w.text === "cook").length === 1);
+  const titles = READS.map(r => r.title).join();
+  assert.ok((titles.match(/Cookies|Brownies|Muffins|Recipe/g) || []).length >= 4, titles);
+});
+
+test("nothing identifying or heavy in the interest content", () => {
+  const all = JSON.stringify([THREADS, STORIES, READS, STARTER.filter(w => w.topic)]);
+  assert.ok(!/\b(stupid|dumb|fail\w*|retard\w*|disab\w*|caregiver|client|stroke)\b/i.test(all));
 });
 
 test("content: threads and stories are complete, and every story path reaches the end", () => {
