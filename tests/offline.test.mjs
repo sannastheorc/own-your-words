@@ -21,3 +21,8 @@ test("a waiting update shows its banner without having to change screens", () =>
   const app = readFileSync(new URL("../app/js/app.js", import.meta.url), "utf8");
   assert.match(app, /reg\.waiting && navigator\.serviceWorker\.controller\) \{ updateReady = reg\.waiting; if \(screen === "home"\) render\(\); \}/);
 });
+
+test("an update clears only this app's old files, never another app's on the same web address", () => {
+  assert.match(sw, /k\.startsWith\("own-your-words-"\) && k !== VERSION/);
+  assert.match(sw, /const VERSION = "own-your-words-v\d+"/);
+});
