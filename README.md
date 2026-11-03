@@ -8,7 +8,7 @@ who can learn but were never properly taught. Grown-up games on a phone, with no
 
 ## Status (2026-11-02)
 
-First version, 0.1.0. Not yet published, and not yet tried on a real phone or by a real learner. No independent review yet.
+First version, 0.1.0, published at https://sannastheorc.github.io/own-your-words/ (pushes to main publish automatically). Not yet tried on a real phone or by a real learner. No independent review yet.
 
 Verified in a desktop browser at phone size: `npm test` passes; the word routine, each game, Block Drop, goals,
 certificates, month report and helper tools were driven through the real screens, and the app opens offline.
