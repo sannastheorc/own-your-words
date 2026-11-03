@@ -1,0 +1,11 @@
+{
+  "name": "own-your-words",
+  "private": true,
+  "version": "0.1.0",
+  "description": "SEEDSED — offline spelling and reading comprehension games for adults, on a phone",
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/",
+    "serve": "python3 -m http.server 8644 --bind 127.0.0.1 --directory app"
+  }
+}
