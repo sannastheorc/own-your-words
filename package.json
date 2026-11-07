@@ -1,7 +1,7 @@
 {
   "name": "own-your-words",
   "private": true,
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "SEEDSED — offline spelling and reading comprehension games for adults, on a phone",
   "type": "module",
   "scripts": {

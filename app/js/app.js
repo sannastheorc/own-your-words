@@ -404,15 +404,16 @@ function startUseIt(key) {
   const started = store.startedWords().map(w => w.key);
   const usable = owned.length ? owned : started;
   const w = key ? store.word(key) : store.word(pickFrom(usable.length ? usable : [store.allWords()[0].key]));
-  S = { word: w, msg: "" };
+  S = { word: w, msg: "", fromLab: !!key };
   typed = "";
   screen = "useit";
   render();
   speak(w.text, { rate: RATE });
 }
 function viewUseIt() {
-  const { word, msg, saved } = S;
-  if (saved) return top("Use It") + `<section class="fb great" role="status"><h3>Saved.</h3><p class="sentence">${esc(saved)}</p><p class="small">Your helper can read it with you.</p><div class="row"><button class="primary" data-act="useit">Another word</button><button data-act="go" data-to="home">Home</button></div></section>${winsHtml()}`;
+  const { word, msg, saved, fromLab } = S;
+  const nextBtn = fromLab ? `<button class="primary" data-act="lab-next">Next word</button>` : `<button class="primary" data-act="useit">Another word</button>`;
+  if (saved) return top("Use It") + `<section class="fb great" role="status"><h3>Saved.</h3><p class="sentence">${esc(saved)}</p><p class="small">Your helper can read it with you.</p><div class="row">${nextBtn}<button data-act="go" data-to="home">Home</button></div></section>${winsHtml()}`;
   return `<div class="play">${top("Use It")}<section class="card"><p class="eyebrow">Write your own sentence with</p><div class="target">${esc(word.text)}</div>
     ${word.meaning ? `<p class="small"><b>Means:</b> ${esc(word.meaning)}</p>` : ""}${msg ? `<p class="hint">${esc(msg)}</p>` : ""}</section>
     ${typedBox(true)}${keyboard({ doneLabel: "Save", sentence: true })}</div>`;

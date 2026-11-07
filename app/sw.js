@@ -2,7 +2,7 @@
 // Purpose: OFFLINE SHELL. Pre-caches every app file and serves them cache-first, so the app opens with
 //          no network. Bump VERSION whenever a file changes. A new version waits for "Update now".
 // Boundaries: only app files. His data lives in localStorage and is never touched here.
-const VERSION = "own-your-words-v4";
+const VERSION = "own-your-words-v5";
 const SHELL = ["./", "index.html", "manifest.webmanifest", "css/app.css", "js/app.js", "js/words.js", "js/commonwords.js", "js/spelling.js",
   "js/goals.js", "js/store.js", "js/content.js", "js/certificate.js", "js/speech.js", "js/blocks.js",
   "icons/icon-192.png", "icons/icon-512.png", "icons/icon-maskable-512.png", "icons/apple-touch-icon.png"];
