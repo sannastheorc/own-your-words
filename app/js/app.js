@@ -529,6 +529,7 @@ function viewHelper() {
       ${row("h-report", "Month report", "Time, counts and goals")}
       ${row("h-words", "His word list", `${store.data.mine.length} added`)}
       ${row("h-sentences", "His sentences", pending ? `${pending} to look at` : "All looked at")}
+      ${row("h-writing", "Words from his writing", `${store.writingQueue().length} waiting`)}
       ${row("h-readings", "Book readings", `${store.data.readings.length} added`)}
       ${row("h-settings", "Settings", "Name, level, words a day")}
     </section><p class="small muted">Everything here stays on this phone. If the app is deleted, it's gone, so save reports and certificates somewhere else.</p>`;
@@ -570,6 +571,12 @@ function viewSentences() {
       ${s.review ? "" : `<span class="row"><button data-act="sent" data-id="${s.id}" data-v="good">Used well</button><button data-act="sent" data-id="${s.id}" data-v="talk">Talk about it</button></span>`}</li>`).join("")}</ul></section>` : `<section class="card"><p class="muted">Nothing yet. They show up here after he plays Use It.</p></section>`}`;
 }
 
+function viewWriting() {
+  const rows = store.writingQueue().map(q => `<li><div><b>${esc(q.meant)}</b><small>He wrote "${esc(q.wrong)}" · ${q.level === 1 ? "Everyday" : q.level === 2 ? "Common" : "Harder"} · ${prettyDate(q.firstSeen)}</small></div><button class="quiet" data-act="writing-del" data-m="${esc(q.meant)}">Remove</button></li>`).join("");
+  return top("Words from his writing", "helper") + `<p class="small muted">Words he spelled differently in his own sentences. They come into the Word Lab later as ordinary new words: everyday ones a couple of words later, harder ones when he reaches that level. He is never shown this list or told he got anything wrong.</p>
+    ${rows ? `<section class="card"><ul class="list">${rows}</ul></section>` : `<section class="card"><p class="muted">Nothing waiting.</p></section>`}`;
+}
+
 function viewReadings() {
   const rows = store.data.readings.map(r => `<li><div><b>${esc(r.title)}</b><small>${r.questions.length} ${r.questions.length === 1 ? "question" : "questions"}</small></div><button class="quiet" data-act="read-del" data-id="${r.id}">Remove</button></li>`).join("");
   return top("Book readings", "helper") + `<section class="card"><form id="read-form" class="goal"><h3>Add a reading</h3>
@@ -593,7 +600,7 @@ function viewSettings() {
 // ---------------------------------------------------------------- render + events
 const VIEWS = { welcome: viewWelcome, home: viewHome, lab: viewLab, crack: viewCrack, gaps: viewGaps, typo: viewTypo, thread: viewThread, storypick: viewStoryPick, story: viewStory,
   arcade: viewArcade, blocks: viewBlocks, useit: viewUseIt, readpick: viewReadPick, reading: viewReading, summary: viewSummary, wins: viewWins, helper: viewHelper, "h-goals": viewGoals, "h-report": viewReport,
-  "h-words": viewWords, "h-sentences": viewSentences, "h-readings": viewReadings, "h-settings": viewSettings };
+  "h-words": viewWords, "h-sentences": viewSentences, "h-writing": viewWriting, "h-readings": viewReadings, "h-settings": viewSettings };
 function render() { $app.innerHTML = (VIEWS[screen] || viewHome)(); if (screen === "blocks") drawBlocks(); }
 function go(to) { cancelSpeech(); stopBlocks(); screen = to; note = ""; S = {}; typed = ""; render(); window.scrollTo(0, 0); }
 
@@ -666,6 +673,7 @@ $app.addEventListener("click", async e => {
     case "check-week": collect(store.toggleCheck(+v.i, +v.w)); return render();
     case "goal-del": store.setGoal(+v.i, null); return render();
     case "word-del": store.removeMine(v.k); return render();
+    case "writing-del": store.removeWriting(v.m); return render();
     case "sent": store.reviewSentence(v.id, v.v); return render();
     case "read-del": store.removeReading(v.id); return render();
     case "set": store.data[v.key] = +v.v; store.save(); return render();

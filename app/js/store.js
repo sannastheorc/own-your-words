@@ -7,6 +7,7 @@
 
 import { STARTER } from "./words.js";
 import { stepsFor, nextStep, soundAlikes, normal } from "./spelling.js";
+import { wordsFromSentence } from "./writingwords.js";
 import { evaluateGoal, GOAL_TYPES, ACTIVITY_FIELDS } from "./goals.js";
 import { PLAYS_PER_LESSON } from "./blocks.js";
 
@@ -22,7 +23,7 @@ export function memoryStorage() {
   return { getItem: k => (m.has(k) ? m.get(k) : null), setItem: (k, v) => m.set(k, String(v)), removeItem: k => m.delete(k) };
 }
 
-const empty = () => ({ version: 1, name: "", askedName: false, level: 1, perDay: 3, words: {}, mine: [], log: {}, goals: {}, certs: [], sentences: [], readings: [], arcade: { plays: 0, best: 0 }, done: { threads: [], stories: [], readings: [] } });
+const empty = () => ({ version: 1, name: "", askedName: false, level: 1, perDay: 3, words: {}, mine: [], log: {}, goals: {}, certs: [], sentences: [], readings: [], arcade: { plays: 0, best: 0 }, done: { threads: [], stories: [], readings: [] }, writing: [], writingRemoved: [], writingRead: false });
 
 export class Store {
   constructor(storage, now = () => Date.now()) {
@@ -30,6 +31,11 @@ export class Store {
     this.now = now;
     this.saveError = null;
     this.data = this.#load();
+    if (!this.data.writingRead) { // sentences saved before the quiet queue existed are read once
+      for (const x of this.data.sentences) this.noteWriting(x.text);
+      this.data.writingRead = true;
+      this.save();
+    }
   }
 
   #load() {
@@ -74,7 +80,7 @@ export class Store {
       if (topic[i]) mixed.push(topic[i]);
       if (everyday[i]) mixed.push(everyday[i]);
     }
-    return [...this.data.mine, ...mixed];
+    return [...this.data.mine, ...mixed, ...this.data.writing.filter(q => !this.#starterKey(q.meant)).map(q => this.#writingWord(q))];
   }
   word(key) { return this.allWords().find(w => w.key === key) || null; }
   stateOf(key) { return (this.data.words[key] ||= { step: 0, started: null, owned: null, review: null, misses: 0 }); }
@@ -91,7 +97,11 @@ export class Store {
     if (open) return { key: open.key, mode: "lab" };
     const startedToday = Object.values(this.data.words).filter(s => s.started === this.today()).length;
     if (startedToday >= this.data.perDay && !extra) return null;
-    const fresh = words.find(w => !this.data.words[w.key]?.started);
+    const isNew = w => !this.data.words[w.key]?.started;
+    const levelNow = words.find(w => w.source === "starter" && isNew(w))?.level ?? 3;
+    const quiet = this.data.writing.find(q => q.level <= levelNow && this.#startedCount() >= q.after && isNew({ key: this.#writingKey(q.meant) }));
+    if (quiet) return { key: this.#writingKey(quiet.meant), mode: "lab" };
+    const fresh = words.find(isNew);
     return fresh ? { key: fresh.key, mode: "lab" } : null;
   }
 
@@ -152,11 +162,32 @@ export class Store {
   // ---- His own sentences. The app checks spelling of the word; a person judges the meaning.
   addSentence(key, text) {
     this.data.sentences.push({ id: `${this.now()}`, key, word: this.word(key)?.text || key, text, on: this.today(), review: null });
+    this.noteWriting(text);
     this.dayLog().sentences++;
     this.earnPlay();
     this.save();
     return this.checkGoals();
   }
+  // ---- Quiet queue: words he misspelled in his own writing come back later as ordinary Word Lab words.
+  // Everyday ones a couple of new words later; harder ones once he reaches their level. He is never told.
+  noteWriting(text) {
+    for (const f of wordsFromSentence(text, STARTER)) {
+      const key = this.#writingKey(f.meant);
+      if (this.data.writingRemoved.includes(f.meant) || this.data.writing.some(q => q.meant === f.meant) || this.data.words[key]?.started) continue;
+      this.data.writing.push({ wrong: f.wrong, meant: f.meant, firstSeen: this.today(), level: f.level, after: this.#startedCount() + 2 });
+    }
+  }
+  writingQueue() { return this.data.writing; }
+  removeWriting(meant) {
+    this.data.writing = this.data.writing.filter(q => q.meant !== meant);
+    if (!this.data.writingRemoved.includes(meant)) this.data.writingRemoved.push(meant);
+    this.save();
+  }
+  #startedCount() { return Object.values(this.data.words).filter(s => s.started).length; }
+  #starterKey(meant) { return STARTER.find(w => w.text === meant)?.key || null; }
+  #writingKey(meant) { return this.#starterKey(meant) || `writing:${meant}`; }
+  #writingWord(q) { return { key: `writing:${q.meant}`, text: q.meant, wrong: soundAlikes(q.meant), kind: "writing", meaning: "", gap: "", level: q.level, source: "writing" }; }
+
   reviewSentence(id, verdict) {
     const s = this.data.sentences.find(x => x.id === id);
     if (s) { s.review = verdict; this.save(); }

@@ -12,6 +12,8 @@ Version 0.2.0 adds words, stories, conversations and how-tos around his interest
 
 Version 0.2.3 (2026-11-07): after owning a word, a sentence written from the Word Lab now leads on to the next word ("Next word"). Before, the Saved screen only offered another sentence, so he looped. First tried by the learner on a Dell 2-in-1 running Linux Mint, in Chromium with a Piper voice.
 
+Version 0.3.0 (2026-11-07): words he misspells in his own sentences ("pepole", "thier") quietly come back later as ordinary Word Lab words, everyday ones a couple of words later and harder ones once he reaches that level. He is never corrected or told. The helper sees and can remove them under "Words from his writing". Names, slang, joined words and unclear guesses are left alone.
+
 Verified in a desktop browser at phone size: `npm test` passes; the word routine, each game, Block Drop, goals,
 certificates, month report and helper tools were driven through the real screens, and the app opens offline.
 
